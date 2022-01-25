@@ -1,4 +1,4 @@
-function TheChosenOnes = RouletteSelection(Population, PopulationNumber, HowMany, Scores)
+function [TheChosenOnes, Probabilities] = RouletteSelection(Population, PopulationNumber, HowMany, Scores)
 %SELECTION selects the best genome for reproducing
 %   @param Population is the population of an i-th generation
 %   @param HowMany is how many parents we want to chose
@@ -23,6 +23,8 @@ function TheChosenOnes = RouletteSelection(Population, PopulationNumber, HowMany
             end
         end
     end
+    if isempty(TheChosenOnes)
+        TheChosenOnes = Population(randi(PopulationNumber, HowMany, 1),:);
+    end
         
 end
-

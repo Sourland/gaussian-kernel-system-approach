@@ -1,32 +1,22 @@
-function score = Score(Genome, NumberOfBits, NumberOfWords)
+function score = Score(Genome, NumberOfBits, NumberOfGaussians)
 %SCORE calculates the score of the genome
 %   @param Genome
-    u1 = [-1:0.025:2];
-    u2 = [-2:0.025:1];
-    DecodedGenome = Decode(Genome, NumberOfBits, NumberOfWords);
+    u1 = [-1:0.02:2];
+    u2 = [-2:0.02:1];
     Scores = zeros(length(u1),1);
-    Coefficients = DecodedGenome(:,1);
-    c1 = DecodedGenome(:,2);
-    Sigma1 = DecodedGenome(:,3);
-    c2 = DecodedGenome(:,4);
-    Sigma2 = DecodedGenome(:,5);
-    if sum(Coefficients) > 15
-        score = 1e5;
-        return;
-    end
+    [a, c1, c2, Sigma1, Sigma2] = Decode(Genome, NumberOfBits, NumberOfGaussians);
     for i = 1:length(u1)
         G = 0;
-        for j =1:NumberOfWords
-            if Sigma1(j) == 0 || Sigma2(j) == 0
-                score = 1e5;
-                return
-            end
-            G = G + Coefficients(j)*Gaussian(u1(i),u2(i), c1(j), c2(j), Sigma1(j), Sigma2(j));
+            
+        for j = 1:NumberOfGaussians
+            G = G + a(j)*Gaussian(u1(i),u2(i), c1(j), c2(j), Sigma1(j), Sigma2(j));
         end
-        Scores(i) = ObjectiveFunction(u1(i),u2(i)) - G;
+        
+        Scores(i) = (ObjectiveFunction(u1(i), u2(i)) - G)^2;
         
     end
-    score = abs(mean(Scores));
+
+    score = mean(Scores);
     
 end
 

@@ -5,7 +5,7 @@ function Genome = Mutation(Genome, MutationRate)
     
     for i = 1:length(Genome)
         if rand < MutationRate
-            Genome(i) = int2str(1 - str2num(Genome(i)));
+            Genome(i) = 1-Genome(i);
         end
     end
 end

@@ -1,16 +1,19 @@
-function Decoded = Decode(Genome, NumberOfBits, NumberOfWords)
+function [a, c1, c2, Sigma1, Sigma2] = Decode(Genome, NumberOfBits, NumberOfGaussians)
 %DECODE decodes a bit sequence
 %   @param 
-    Decoded = zeros(NumberOfWords, 5);
-    for i = 1:NumberOfWords
+    Bounds = [-2 2; -3 3; -3 3; 0.1 1.5; 0.1 1.5];
+    for i = 1:NumberOfGaussians
         Start = (i-1)*NumberOfBits + 1;
         End = (i-1)*NumberOfBits + NumberOfBits;
-        SubWord = Genome(Start:End);
-        Decoded(i,1) = bin2dec(SubWord(1:2));
-        Decoded(i,2) = bin2float(SubWord(3:9), 'signed') ;
-        Decoded(i,3) = bin2float(SubWord(10:16));
-        Decoded(i,4) = bin2float(SubWord(17:23), 'signed');
-        Decoded(i,5) = bin2float(SubWord(24:30)) ;    
+        SubGenome = Genome(Start:End);
+        
+        a(i) = DecodeWord(SubGenome(1:12), Bounds(1,:));
+        c1(i) = DecodeWord(SubGenome(13:24), Bounds(2,:));
+        c2(i) = DecodeWord(SubGenome(25:36), Bounds(3,:));
+        Sigma1(i) = DecodeWord(SubGenome(37:48), Bounds(4,:));
+        Sigma2(i) = DecodeWord(SubGenome(49:50), Bounds(5,:));
+        
+        
     end
 end
 
