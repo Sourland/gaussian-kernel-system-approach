@@ -1,8 +1,8 @@
-function score = Score(Genome, NumberOfBits, NumberOfGaussians)
+function score = Score(Genome, NumberOfBits, NumberOfGaussians, Input)
 %SCORE calculates the score of the genome
 %   @param Genome
-    u1 = [-1:0.02:2];
-    u2 = [-2:0.02:1];
+    u1 = Input(1,:);
+    u2 = Input(2,:);
     Scores = zeros(length(u1),1);
     [a, c1, c2, Sigma1, Sigma2] = Decode(Genome, NumberOfBits, NumberOfGaussians);
     for i = 1:length(u1)

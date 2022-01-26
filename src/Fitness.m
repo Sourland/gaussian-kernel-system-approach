@@ -5,7 +5,7 @@ function Answer = Fitness(GenomeScore)
     if GenomeScore == 0
         Answer  = 1e9;
     else
-        Answer = 1/GenomeScore;
+        Answer = 1./GenomeScore;
     end
 end
 

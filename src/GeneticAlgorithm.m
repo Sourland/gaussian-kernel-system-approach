@@ -1,4 +1,4 @@
-function [BestGenome, BestScore, Generation, ListOfScores] = GeneticAlgorithm(NumberOfBits, NumberOfGaussians, NumberOfGenerations, PopulationNumber, CrossoverRate, MutationRate, Seniority, FinishCondition)
+function [BestGenome, BestScore, Generation, ListOfScores] = GeneticAlgorithm(NumberOfBits, NumberOfGaussians, NumberOfGenerations, PopulationNumber, CrossoverRate, MutationRate, FinishCondition)
 %GENETIC_ALGORITHM finds the solution to the problem - An analytic
 %expression of the unknown function
 %   @param NumberOfBits the number of bits per word
@@ -7,17 +7,21 @@ function [BestGenome, BestScore, Generation, ListOfScores] = GeneticAlgorithm(Nu
 %   @param PopulationNumber the number of total genomes in every generation
 %   @param CrossoverRate the probabiliy of a crossover between two parents
 %   @param MutationRate the probability of a mutation in a genome
-    
+    u1 = [-1 2];
+    u2 = [-2 1];
+    Input1 = u1(1) + (u1(2) - u1(1)).*rand(300,1);
+    Input2 = u2(1) + (u2(2) - u2(1)).*rand(300,1);
     Population = CreatePopulation(PopulationNumber, NumberOfBits, NumberOfGaussians);
     ListOfScores = [];
     BestGenome = Population(1,:);
-    BestScore(1) = Score(BestGenome, NumberOfBits, NumberOfGaussians);
+    BestScore(1) = Score(BestGenome, NumberOfBits, NumberOfGaussians, [Input1'; Input2']);
     GenomeScores = zeros(PopulationNumber,1);
     for i = 1:NumberOfGenerations
-        
+        Input1 = u1(1) + (u1(2) - u1(1)).*rand(300,1);
+        Input2 = u2(1) + (u2(2) - u2(1)).*rand(300,1);
         Generation = i;
         for GenomeIndex = 1:PopulationNumber
-            GenomeScores(GenomeIndex) = Score(Population(GenomeIndex,:), NumberOfBits, NumberOfGaussians);
+            GenomeScores(GenomeIndex) = Score(Population(GenomeIndex,:), NumberOfBits, NumberOfGaussians, [Input1'; Input2']);
             
             if GenomeScores(GenomeIndex) < BestScore
                 BestGenome = Population(GenomeIndex,:);
@@ -32,39 +36,21 @@ function [BestGenome, BestScore, Generation, ListOfScores] = GeneticAlgorithm(Nu
             return;
         end
         
-        Selected = RouletteSelection(Population, PopulationNumber, floor(Seniority*PopulationNumber), GenomeScores);
+        for S = 1:PopulationNumber
+            Selected(S,:) = Tournament(Population, PopulationNumber, GenomeScores);
+        end 
         Children = [];
-        Indices = randi(floor(Seniority*PopulationNumber), floor((1-Seniority)*PopulationNumber), 2);
-        for j = 1:ceil((1-Seniority)*PopulationNumber/2)
-            try Parent1 = Selected(Indices(j,1),:);
-            catch
-                disp('')
-                disp('SELECTING FROM EMPTY ARRAY')
-                disp('CANCELLING PROCESS...')
-                disp('')
-                return
-            end
-           
-            
-            try Parent2 = Selected(Indices(j,2),:);
-            catch
-                disp('')
-                disp('SELECTING FROM EMPTY ARRAY')
-                disp('CANCELLING PROCESS...')
-                disp('')
-                return
-            end
+        
+        for j = 1:2:PopulationNumber
+            Parent1 = Selected(j,:);
+            Parent2 = Selected(j+1,:);
                 
             [Child1, Child2] = Crossover(Parent1, Parent2, CrossoverRate);
             Child1 = Mutation(Child1, MutationRate);
             Child2 = Mutation(Child2, MutationRate);
             Children = [Children; Child1; Child2];
         end
-        if BestScore < 1e5
-            
-            ListOfScores = [ListOfScores BestScore];
-        end
-        Population = [Selected;Children];
+        Population = Children;
         
     end
     fprintf('In %d generations of evolution, a solution did not meet a desired fitness.\n', NumberOfGenerations)
