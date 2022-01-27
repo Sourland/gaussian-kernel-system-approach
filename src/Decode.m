@@ -1,7 +1,7 @@
 function [a, c1, c2, Sigma1, Sigma2] = Decode(Genome, NumberOfBits, NumberOfGaussians)
 %DECODE decodes a bit sequence
 %   @param 
-    Bounds = [-3 3; -1.5 2.5; -2.5 1.5; 0.1 2.5; 0.1 2.5];
+    Bounds = [-2 2; -3 3; -3 3; 0.5 1; 0.5 1];
     for i = 1:NumberOfGaussians
         Start = (i-1)*NumberOfBits + 1;
         End = (i-1)*NumberOfBits + NumberOfBits;
