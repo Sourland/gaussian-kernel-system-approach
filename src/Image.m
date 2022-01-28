@@ -12,7 +12,7 @@ function [] = Image(Solution, NumberOfGaussians)
     fun2 = sin(u1 + u2)*sin(u2^2);
     
     figure()
-    colormap summer
+    colormap autumn
     shading interp
     fsurf(fun2, [-1 2 -2 1])
     title('Plot of Input-Output System')
@@ -22,7 +22,7 @@ function [] = Image(Solution, NumberOfGaussians)
     colorbar
     
     figure()
-    colormap cool
+    colormap autumn
     shading interp
     fsurf(fun, [-1 2 -2 1])
     
